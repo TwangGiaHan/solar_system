@@ -13,8 +13,6 @@ var saveCur, saveNext;
 var orbitDraw = new Map();
 var clock = new THREE.Clock();
 var tick = 0;
-var cometSet = true;
-var lastCometX, lastCometY, lastCometZ;
 var params = {
     Camera: "Galaxy",
 };
@@ -58,8 +56,6 @@ progressBar.click(function (e) {
 function pre() {
     var manifest = [
         "res/callisto/diffuse.jpg",
-        "res/comet/particle2.png",
-        "res/comet/perlin-512.png",
         "res/deimos/diffuse.jpg",
         "res/deimos/bump.jpg",
         "res/dione/diffuse.jpg",
@@ -130,12 +126,14 @@ function initCamera() {
     trackCamera["Galaxy"] = new cameraParameters(7000, 200, "Sun");
     trackCamera["Galaxy"].theta = 80.0;
     trackCamera["Galaxy"].phi = 0.0;
-    trackCamera["Comet"] = new cameraParameters(1000, 1000, "Comet");
     var planets = ["Sun", "Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
     for (var i in planets) {
         trackCamera[planets[i]] = new cameraParameters(3.0 * celestialBodies[planets[i]].radius, 3.0 * celestialBodies[planets[i]].radius, planets[i]);
     }
-    trackCamera["Ship"] = new cameraParameters(3.0 * celestialBodies["Ship"].radius, 3.0 * celestialBodies["Ship"].radius, "Ship")
+    // camera chuyển đến Hubble
+    trackCamera["Hubble"] = new cameraParameters(3.0 * celestialBodies["Hubble"].radius, 3.0 * celestialBodies["Hubble"].radius, "Hubble");
+    trackCamera["ISS"] = new cameraParameters(3.0 * celestialBodies["ISS"].radius, 3.0 * celestialBodies["ISS"].radius, "ISS");
+    trackCamera["TESS"] = new cameraParameters(3.0 * celestialBodies["TESS"].radius, 3.0 * celestialBodies["TESS"].radius, "TESS");
 }
 
 function initLight() {
@@ -215,7 +213,7 @@ function initObjects() {
     var skyBox = new THREE.Mesh(skyGeometry, materialArray);
     skyBox.rotateX(Math.PI / 2);
     scene.add(skyBox);
-    var orbits = ["Comet", "Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
+    var orbits = ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"/*, "Ship", "Hubble", "ISS"*/]; 
     for (var i in orbits) {
         orbitDraw[orbits[i]] = drawOrbit(celestialBodies[orbits[i]]);
     }
@@ -233,7 +231,6 @@ function initGui() {
     var calculate = gui.addFolder('Calculate');
     calculateParams = {
         Sun: true,
-        Comet: true,
         Mercury: true,
         Venus: true,
         Earth: true,
@@ -248,7 +245,6 @@ function initGui() {
         calculate.add(calculateParams, i);
     var orbit = gui.addFolder('Orbit');
     orbitParams = {
-        Comet: false,
         Mercury: false,
         Venus: false,
         Earth: false,
@@ -259,28 +255,9 @@ function initGui() {
         Neptune: false,
         Pluto: false
     };
-    var comet = gui.addFolder('CometParameters');
-    cometParams = {
-        Length: 6000.,
-        Size: 15000.
-    };
-    comet.add(cometParams, "Length", 1000, 100000)
-        .onChange(function () {
-            window.removeEventListener('mousedown', onWindowMouseDown, false);
-        })
-        .onFinishChange(function () {
-            window.addEventListener('mousedown', onWindowMouseDown, false);
-        });
-    comet.add(cometParams, "Size", 1000, 100000)
-        .onChange(function () {
-            window.removeEventListener('mousedown', onWindowMouseDown, false);
-        })
-        .onFinishChange(function () {
-            window.addEventListener('mousedown', onWindowMouseDown, false);
-        });
     for (var i in orbitParams)
         orbit.add(orbitParams, i);
-    gui.add(params, 'Camera', ["Galaxy", "Sun", "Comet", "Ship", "Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"]).onChange(function (val) {
+    gui.add(params, 'Camera', ["Galaxy", "Sun", "Hubble", "ISS", "TESS", "Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"]).onChange(function (val) {
         nextBody = val;
         if (nextBody != switchCamera.body || (curBody == "Galaxy" && nextBody == "Sun")) {
             initTween();

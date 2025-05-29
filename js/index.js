@@ -60,20 +60,6 @@
                 if (progress >= 100) {
                     progress = 100;
                 }
-
-                // if(finish){
-                //
-                //     button.removeClass('in-progress').addClass('finished');
-                //
-                //     bar.delay(500).fadeOut(function(){
-                //
-                //         // Trigger the custom progress-finish event
-                //         button.trigger('progress-finish');
-                //         setProgress(0);
-                //     });
-                //
-                // }
-
                 setProgress(progress);
             });
 
@@ -192,9 +178,9 @@
     }
 
     PreLoad.DEFAULTS = {
-        order: 'unordered', //无序预加载
-        each: null, //每张图片加载完毕后执行
-        all: null // 所有图片加载完毕后执行
+        order: 'unordered', 
+        each: null, 
+        all: null 
     };
     PreLoad.prototype._ordered = function () {
         var imgs = this.imgs,
@@ -208,7 +194,6 @@
             $(imgObj).on('load error', function () {
                 opts.each && opts.each(count);
                 if (count >= len) {
-                    //所有图片全部加载完成
                     opts.all && opts.all();
                 } else {
                     load();
@@ -222,7 +207,7 @@
 
         load();
     };
-    PreLoad.prototype._unordered = function () {//无序加载
+    PreLoad.prototype._unordered = function () {
 
         var imgs = this.imgs,
             opts = this.opts,

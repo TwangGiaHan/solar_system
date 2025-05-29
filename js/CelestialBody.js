@@ -8,15 +8,11 @@ var CelestialBody = function (obj) {
     this.spherical = true;
     this.oblateness = 0.;
     this.radius = 1.;
-    this.isComet = false;
-    this.particleSystem = null;
     // Parent/moon objects
     this.parent = null;
     this.children = [];
     // TODO: Model info, to be implemented
     // Orbit parameters
-    // 周期（恒星）、半长轴、离心率、倾角、升交点黄经、平近点角 (历时原点假设轨道是圆形时的黄经偏移)
-
     this.position = {
         x: 0, y: 0, z: 0,
     };
@@ -31,19 +27,10 @@ var CelestialBody = function (obj) {
         inclination: 0., ascendingNode: 0., meanLongitude: 0.
     };
     // Rotation parameters
-    // 周期（恒星）、倾角（黄赤夹角）、子午角（自转轴所在的与黄道垂直的平面，即子午面，与xOy平面的夹角）、历时原点角度偏移
-    // 注：这里我们使用xOz平面作为黄道面
     this.rotation = {
         period: 1., inclination: 1.,
         meridianAngle: 0., offset: 0.
     };
-    // 远景时显示光芒的参数设定
-    // albedo 为反照率
-    // 下面给出一个该把这个光点画多亮的粗略估计（只是用来看的，不是很严谨）
-    // x > R/k:   (2 - <c, p>/(|c|*|p|)) * R^2 * a * log(k*x0/R) / log(k*x/R)
-    // else:    0
-    // 其中，a是反照率，记号<,>表示内积，|.|是二范数，c是摄像机坐标，p是天体坐标
-    // R 是天体半径，x 是距天体的距离，即|c - p|，k 是一个系数
     this.albedo = 1.;
     this.shineColor = 0xffffff;
     // Material settings
@@ -107,59 +94,71 @@ CelestialBody.prototype.generateObjectsOnScene = function (argScene) {
     var that = this;
     // if(this.spherical)
     if (!this.spherical) {
-        if (this.isComet) {
-            this.cometPivot = new THREE.Group();
-            this.objectGroup = new THREE.Group();
-            this.particleSystem = new THREE.GPUParticleSystem({
-                maxParticles: 150000
-            });
-            this.objectGroup.add(this.particleSystem);
-            argScene.add(this.objectGroup);
-        } else {
-            this.objectGroup = new THREE.Group();
-            var onProgress = function (xhr) {
-                if (xhr.lengthComputable) {
-                    var percentComplete = xhr.loaded / xhr.total * 100;
-                }
-            };
-            var onError = function (xhr) {
-            };
-            if (that.obj.mtlPath != null) {
-                mtlLoader.setPath(that.obj.path);
-                mtlLoader.load(that.obj.mtlPath, function (materials) {
-                    materials.preload();
-                    objLoader.setMaterials(materials);
-                    objLoader.setPath(that.obj.path);
-                    objLoader.load(that.obj.objPath, function (object) {
-                        that.objectGroup.add(object);
-                        var scale = that.obj.scale;
-                        object.rotateY(that.obj.angle / 180.0 * Math.PI);
-                        object.scale.set(scale, scale, scale);
-                        object.translateX(that.obj.x);
-                        object.translateY(that.obj.y);
-                        object.translateZ(that.obj.z);
-                    }, onProgress, onError);
-                });
-            } else {
+        this.objectGroup = new THREE.Group();
+        var onProgress = function (xhr) {
+            if (xhr.lengthComputable) {
+                var percentComplete = xhr.loaded / xhr.total * 100;
+            }
+        };
+        var onError = function (xhr) {
+        };
+        // Nếu có thuộc tính glb (dùng cho GLB/GLTF)
+        if (that.glb && that.glb.file) {
+            // var gltfLoader = new THREE.GLTFLoader();
+            var gltfLoader = (typeof THREE.GLTFLoader !== "undefined")
+                ? new THREE.GLTFLoader()
+                : (typeof GLTFLoader !== "undefined" ? new GLTFLoader() : null);
+            if (!gltfLoader) {
+                console.error("GLTFLoader is not available. Please check your script includes.");
+                return;
+            }
+            // gltfLoader.setPath(that.glb.path || "");
+            var filePath = (that.glb.path || "") + (that.glb.file || "");
+            // gltfLoader.load(that.glb.file, function (gltf) {
+            gltfLoader.load(filePath, function (gltf) {
+                var object = gltf.scene;
+                var scale = that.glb.scale || 1;
+                object.scale.set(scale, scale, scale);
+                object.rotation.y = (that.glb.angle || 0) * Math.PI / 180;
+                object.position.set(that.glb.x || 0, that.glb.y || 0, that.glb.z || 0);
+                that.objectGroup.add(object);
+            }, onProgress, onError);
+        }
+        else if (that.obj && that.obj.mtlPath != null) {
+            mtlLoader.setPath(that.obj.path);
+            mtlLoader.load(that.obj.mtlPath, function (materials) {
+                materials.preload();
+                objLoader.setMaterials(materials);
                 objLoader.setPath(that.obj.path);
                 objLoader.load(that.obj.objPath, function (object) {
-                    object.traverse(function (child) {
-                        var material = new THREE.MeshLambertMaterial();
-                        if (child instanceof THREE.Mesh) {
-                            child.material = material;
-                        }
-                    });
                     that.objectGroup.add(object);
-                    object.rotateY(that.obj.angle / 180.0 * Math.PI);
                     var scale = that.obj.scale;
+                    object.rotateY(that.obj.angle / 180.0 * Math.PI);
                     object.scale.set(scale, scale, scale);
                     object.translateX(that.obj.x);
                     object.translateY(that.obj.y);
                     object.translateZ(that.obj.z);
                 }, onProgress, onError);
-            }
-            argScene.add(this.objectGroup);
+            });
+        } else {
+            objLoader.setPath(that.obj.path);
+            objLoader.load(that.obj.objPath, function (object) {
+                object.traverse(function (child) {
+                    var material = new THREE.MeshLambertMaterial();
+                    if (child instanceof THREE.Mesh) {
+                        child.material = material;
+                    }
+                });
+                that.objectGroup.add(object);
+                object.rotateY(that.obj.angle / 180.0 * Math.PI);
+                var scale = that.obj.scale;
+                object.scale.set(scale, scale, scale);
+                object.translateX(that.obj.x);
+                object.translateY(that.obj.y);
+                object.translateZ(that.obj.z);
+            }, onProgress, onError);
         }
+        argScene.add(this.objectGroup);
     } else {
         this.bodySphereGeometry = new THREE.SphereGeometry(this.radius, 64, 64);
         // else if(!this.spherical) blablabla...
@@ -344,14 +343,6 @@ CelestialBody.prototype.generateObjectsOnScene = function (argScene) {
             this.ringMeshPositive = new THREE.Mesh(this.ringGeometry, this.ringMaterial);
             this.ringGeometry = new THREE.CylinderGeometry(this.radius + this.ring.higher, this.radius + this.ring.lower, 0, 100, 100, true);
             this.ringMeshNegative = new THREE.Mesh(this.ringGeometry, this.ringMaterial);
-            // if(this.name === "Saturn") {
-            //     this.ringMeshPositive.castShadow = true;
-            //     this.ringMeshPositive.receiveShadow = true;
-            //     this.ringMeshNegative.castShadow = true;
-            //     this.ringMeshNegative.receiveShadow = true;
-            //     this.bodySphereMesh.castShadow = true;
-            //     this.bodySphereMesh.receiveShadow = true;
-            // }
         }
 
         // Add meshes to the object group
@@ -379,9 +370,9 @@ CelestialBody.prototype.updateClouds = function (time) {
 }
 
 CelestialBody.prototype.update = function (time) {
-    if (this.objectGroup !== undefined || this.isComet) {
+    if (this.objectGroup !== undefined) {
         this.updateOrbitAndRotation(time);
-        if (this.spherical && !this.isComet)
+        if (this.spherical)
             this.updateClouds(time);
     }
 };

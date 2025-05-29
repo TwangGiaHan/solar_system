@@ -118,41 +118,105 @@ celestialBodies = {
             sunsetStrength: 1.0
         }
     }),
-    Comet: new CelestialBody({
-        name: "Comet",
-        parent: "Sun",
-        radius: 0,
-        spherical: false,
-        isComet: true,
-        orbit: {
-            period: 3.5,
-            semiMajorAxis: 3000.,
-            eccentricity: 0.5,
-            inclination: 10.,
-        },
-    }),
-    Ship: new CelestialBody({
-        name: "Ship",
+    // Ship: new CelestialBody({
+    //     name: "Ship",
+    //     parent: "Earth",
+    //     radius: 0.2,
+    //     spherical: false,
+    //     obj: {
+    //         path: "res/space/",
+    //         objPath: "tiangong.obj",
+    //         mtlPath: "tiangong.mtl",
+    //         angle: -30,
+    //         scale: 0.008,
+    //     },
+    //     orbit: {
+    //         period: 1.0,
+    //         semiMajorAxis: 15.,
+    //         inclination: 30,
+    //     },
+    //     rotation: {
+    //         period: 100.0,
+    //         inclination: 0,
+    //     },
+    // }),
+    // Vệ tinh nhân tạo
+    Hubble: new CelestialBody({
+        name: "Hubble",
         parent: "Earth",
-        radius: 0.2,
+        radius: 0.15, 
         spherical: false,
-        obj: {
+        glb: {
             path: "res/space/",
-            objPath: "tiangong.obj",
-            mtlPath: "tiangong.mtl",
-            angle: -30,
-            scale: 0.008,
+            file: "Hubble.glb",
+            scale: 0.02, 
+            angle: -30,   
+            x: 0.02,   
+            y: 0.01,
+            z: -0.015
         },
         orbit: {
-            period: 1.0,
-            semiMajorAxis: 15.,
-            inclination: 30,
+            period: 1.6,             
+            semiMajorAxis: 15.,      
+            inclination: 28.5        
         },
         rotation: {
-            period: 100.0,
+            period: 97.0,          
             inclination: 0,
         },
     }),
+
+    ISS: new CelestialBody({
+        name: "ISS",
+        parent: "Earth",
+        radius: 0.18,
+        spherical: false,
+        obj: {
+            path: "res/space/",
+            objPath: "iss.obj",
+            mtlPath: "iss.mtl",
+            scale: 1,
+            angle: -30, 
+            x: 0.05,
+            y: 0.01,
+            z: -0.02
+        },
+        orbit: {
+            period: 1.5,             
+            semiMajorAxis: 15.,        
+            inclination: 51.6          // nghiêng của ISS
+        },
+        rotation: {
+            period: 100.0,             
+            inclination: 0
+        }
+    }),
+    TESS: new CelestialBody({
+        name: "TESS",
+        parent: "Earth",
+        radius: 0.15,              // kích thước mô hình nhỏ
+        spherical: false,
+        glb: {
+            path: "res/space/",
+            file: "Tess.glb",
+            scale: 0.3,          // thu nhỏ mô hình phù hợp
+            angle: 45,             // xoay một chút cho trực quan
+            x: 0.1, y: 0.02, z: 0  // đặt lệch vị trí để không trùng với vệ tinh khác
+        },
+        orbit: {
+            period: 14.0,          // chu kỳ ~13.7 ngày
+            semiMajorAxis: 60,   // tương đương 108.000 km, tỉ lệ mô phỏng
+            eccentricity: 0.55,    // quỹ đạo elip
+            inclination: 37.0      // độ nghiêng cao
+        },
+        rotation: {
+            period: 200.0,         // quay chậm quanh trục
+            inclination: 0.0
+        }
+    }),
+
+    //
+
     Astronaut: new CelestialBody({
         name: "Astronaut",
         parent: "Earth",

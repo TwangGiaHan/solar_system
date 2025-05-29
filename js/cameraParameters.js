@@ -12,22 +12,13 @@ cameraParameters.prototype.getDistance = function () {
     return this.distance;
 };
 cameraParameters.prototype.getCenterX = function () {
-    if (this.body == "Comet")
-        return celestialBodies["Comet"].cometPivot.position.getComponent(0);
-    else
-        return celestialBodies[this.body].getX();
+    return celestialBodies[this.body].getX();
 };
 cameraParameters.prototype.getCenterY = function () {
-    if (this.body == "Comet")
-        return celestialBodies["Comet"].cometPivot.position.getComponent(1);
-    else
-        return celestialBodies[this.body].getY();
+    return celestialBodies[this.body].getY();
 };
 cameraParameters.prototype.getCenterZ = function () {
-    if (this.body == "Comet")
-        return celestialBodies["Comet"].cometPivot.position.getComponent(2);
-    else
-        return celestialBodies[this.body].getZ();
+    return celestialBodies[this.body].getZ();
 };
 cameraParameters.prototype.getX = function () {
     return this.getCenterX() - (celestialBodies[this.body].getRadius() + this.distance) * Math.cos(this.theta) * Math.cos(this.phi);
