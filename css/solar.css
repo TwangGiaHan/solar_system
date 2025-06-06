@@ -170,3 +170,108 @@ a:hover, a:focus {
 }
 
 
+/* MỚI */
+/* Định dạng khung thông tin của đối tượng */
+.celestial-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 1000;
+}
+
+#celestial-info {
+    display: none;
+    width: 280px;
+    height: 100vh;
+    background: linear-gradient(to bottom, #0a1a2f, #001f33);
+    color: white;
+    padding: 20px;
+    border-right: 2px solid rgba(0, 191, 255, 0.3);
+    box-shadow: 0 0 20px rgba(0, 128, 255, 0.3);
+    z-index: 1000;
+    overflow-y: auto;
+    transition: transform 0.3s ease;
+    transform: translateX(0);
+}
+
+#celestial-info.collapsed {
+    transform: translateX(-100%);
+}
+
+#toggle-button {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 320px;
+    width: 30px;
+    height: 40px;
+    background: rgba(10, 26, 47, 0.9);
+    color: #00bfff;
+    border: none;
+    border-radius: 0 5px 5px 0;
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 1001;
+    transition: all 0.3s ease;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+    align-items: center;
+    justify-content: center;
+
+}
+
+#celestial-info.collapsed + #toggle-button {
+    left: 0;
+}
+
+
+#toggle-button:hover {
+    background: rgba(0, 150, 255, 0.9);
+    color: white;
+}
+
+#info-header {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(0, 191, 255, 0.3);
+}
+
+#celestial-name {
+    margin: 0;
+    font-size: 24px;
+    color: #00bfff;
+    text-align: center;
+}
+
+#celestial-type {
+    color: #8fc4e8;
+    font-size: 18px;
+    text-align: center;
+    margin-top: 10px;
+}
+
+#info-content {
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+#info-content p {
+    margin: 12px 0;
+    padding: 8px 0;
+    border-bottom: 1px dotted rgba(255, 255, 255, 0.1);
+}
+
+#info-content strong {
+    color: #00bfff;
+    margin-right: 5px;
+}
+
+#celestial-description {
+    margin-top: 10px;
+    color: #cce7ff;
+    font-style: italic;
+    line-height: 1.5;
+}
+
+
+
