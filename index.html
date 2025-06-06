@@ -6,23 +6,45 @@
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <link rel="stylesheet" type="text/css" href="css/solar.css">
     <link rel="shortcut icon" href="./solar.png" type="image/x-icon">
+    
 </head>
 <body>
+    
+<!-- Giao diện start -->
 <div id="container" >
-    <!--Loading prompt-->
     <div id="prompt">
-        <img src="res/loading/loading.gif" width="60%"/>
         <h3>Solar System</h3>
-        <p>A mesmerizing journey around the solar system</p>
-        <p class="small">Tap on start 👇</p>
         <a id="control" href="#" class="progress">Start</a>
     </div>
 </div>
-<div>
-    <audio id="promptSound" src="res/prompt/ding.wav" />
+
+<!-- Thanh thông tin hành tinh -->
+ <div class="celestial-container">
+    <div id="celestial-info">
+        <div id="info-header">
+            <h2 id="celestial-name"></h2>
+            <p id="celestial-type"></p>
+        </div>
+        <div id="info-content">
+            <p><strong>Radius:</strong> <span id="celestial-radius"></span> km</p>
+            <p><strong>Orbit Period:</strong> <span id="celestial-orbit"></span> hours</p>
+            <p><strong>Rotation Period:</strong> <span id="celestial-rotation"></span> hours</p>
+            <p><strong>Parent:</strong> <span id="celestial-parent"></span></p>
+            <p><strong>Atmosphere:</strong> <span id="celestial-atmosphere"></span></p>
+            <p><strong>Rings:</strong> <span id="celestial-rings"></span></p>
+            <p><strong>Description:</strong> <span id="celestial-description"></span></p>
+        </div>
+    </div>
+    <button id="toggle-button">⊖</button>
 </div>
+
+<!-- âm thanh cảnh báo -->
+<div>
+    <audio id="promptSound" src="res/prompt/ding.wav" >
+</div>
+
 <div id="info">
-    <a href="https://github.com/solarcg/SolarSys" target="_blank" rel="noopener">Solar System</a></div>
+    <!-- <a href="https://github.com/solarcg/SolarSys" target="_blank" rel="noopener">Solar System</a></div> -->
     <!-- Libraries -->
     <script src="js/libs/jquery-3.2.1.min.js"></script>
     <script src="js/libs/three.min.js"></script>
@@ -54,12 +76,15 @@
     <script src="js/orbit.js"></script>
     <!-- Data -->
     <script src="js/data.js"></script>
-    <!-- Data -->
+    <!-- Data mới thêm-->
+    <script src="js/celestialData.js"></script> 
     <!-- Planet loader -->
+     
     <!-- Animation -->
     <script src="js/animation.js"></script>
     <!-- Controls -->
     <script src="js/control.js"></script>
+    
     <script src="js/libs/dat.gui.min.js"></script>
     <!-- Initializers -->
     <script src="js/main.js"></script>
