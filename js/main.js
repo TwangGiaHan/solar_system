@@ -265,6 +265,8 @@ function initGui() {
             setTween(curBody, nextBody);
             tween.start();
         }
+        // thêm 
+        showCelestialInfo(nextBody);
     });
     control = new function () {
         this.Roam = function () {
@@ -352,6 +354,8 @@ function init() {
     window.addEventListener('DOMMouseScroll', onMouseWheelChange, false);
     window.addEventListener('resize', onWindowResize, false);
     initGui()
+    // thêm 
+    initCelestialInfo();
 }
 
 function onWindowResize() {
@@ -399,5 +403,66 @@ function animate() {
     }
     render();
     stats.update();
+}
+
+
+// thêm hàm mới 
+function showCelestialInfo(name) {
+    const panel = document.getElementById('celestial-info');
+    const toggleBtn = document.getElementById('toggle-button');
+
+
+    if (!panel || !toggleBtn) {
+        console.error("Không tìm thấy panel hoặc nút toggle");
+        return;
+    }
+
+    
+    panel.style.display = 'block';
+    toggleBtn.style.display = 'block';
+
+
+    if (name === "Galaxy") {
+        panel.style.display = 'none';
+        toggleBtn.style.display = 'none';
+        return;
+    }
+
+    const data = window.celestialData.find(obj => obj.name === name);
+    if (!data) return;
+    
+ 
+    panel.classList.remove('collapsed');
+
+
+    document.getElementById('celestial-name').textContent = data.name;
+    document.getElementById('celestial-type').textContent = data.type;
+    document.getElementById('celestial-radius').textContent = data.radius;
+    document.getElementById('celestial-orbit').textContent = data.orbitPeriod;
+    document.getElementById('celestial-rotation').textContent = data.rotationPeriod;
+    document.getElementById('celestial-parent').textContent = data.parent;
+    document.getElementById('celestial-atmosphere').textContent = data.atmosphere ? "Yes" : "No";
+    document.getElementById('celestial-rings').textContent = data.hasRing ? "Yes" : "No";
+    document.getElementById('celestial-description').textContent = data.description;
+}
+
+// Thêm hàm mới
+function initCelestialInfo() {
+    const panel = document.getElementById('celestial-info');
+    const toggleBtn = document.getElementById('toggle-button');
+    
+    if (!panel || !toggleBtn) {
+        console.error("Không tìm thấy panel hoặc nút toggle");
+        return;
+    }
+  
+    panel.classList.add('collapsed');
+
+
+    toggleBtn.addEventListener('click', function() {
+        panel.classList.toggle('collapsed');
+        this.textContent = panel.classList.contains('collapsed') ? '⊕' : '⊖';
+    });
+
 }
 
