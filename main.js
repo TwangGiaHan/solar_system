@@ -52,7 +52,6 @@ progressBar.click(function (e) {
     $(this).removeAttr('onclick');
 });
 
-
 function pre() {
     var manifest = [
         "res/callisto/diffuse.jpg",
@@ -86,12 +85,12 @@ function pre() {
         "res/saturn/bump.png",
         "res/saturn/clouds.png",
         "res/saturn/ring.png",
-        "res/CubeMap/nx.png",
-        "res/CubeMap/ny.png",
-        "res/CubeMap/nz.png",
-        "res/CubeMap/px.png",
-        "res/CubeMap/py.png",
-        "res/CubeMap/pz.png",
+        "res/skybox/posX.jpg",
+        "res/skybox/posY.jpg",
+        "res/skybox/posZ.jpg",
+        "res/skybox/negX.jpg",
+        "res/skybox/negY.jpg",
+        "res/skybox/negZ.jpg",
         "res/sol/diffuse.png",
         "res/titan/diffuse.jpg",
         "res/uranus/diffuse.jpg",
@@ -200,10 +199,9 @@ function initRender() {
 function initObjects() {
     // Add sky box
     var skyboxTextureFilenames = [
-        "res/CubeMap/px.png", "res/CubeMap/nx.png",
-        "res/CubeMap/py.png", "res/CubeMap/ny.png",
-        "res/CubeMap/pz.png", "res/CubeMap/nz.png"
-    ];
+        "res/skybox/posX.jpg", "res/skybox/negX.jpg",
+        "res/skybox/posY.jpg", "res/skybox/negY.jpg",
+        "res/skybox/posZ.jpg", "res/skybox/negZ.jpg"];
     var materialArray = [];
     var skyGeometry = new THREE.CubeGeometry(10000000, 10000000, 10000000);
     for (var i = 0; i < 6; i++)
@@ -242,6 +240,7 @@ function initGui() {
         Neptune: true,
         Pluto: true
     };
+
     for (var i in calculateParams)
         calculate.add(calculateParams, i);
     var orbit = gui.addFolder('Orbit');
@@ -256,6 +255,7 @@ function initGui() {
         Neptune: false,
         Pluto: false
     };
+
     for (var i in orbitParams)
         orbit.add(orbitParams, i);
     gui.add(params, 'Camera', ["Galaxy", "Sun", "Hubble", "ISS", "TESS", "Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"]).onChange(function (val) {
@@ -269,6 +269,7 @@ function initGui() {
         // thêm 
         showCelestialInfo(nextBody);
     });
+
     control = new function () {
         this.Roam = function () {
             if (roamingStatus == false) {
@@ -284,18 +285,21 @@ function initGui() {
                 cameraCopy(switchCamera, trackCamera[curBody]);
                 setTween(curBody, null, celestialBodies["Astronaut"].objectGroup.position.x, celestialBodies["Astronaut"].objectGroup.position.y, celestialBodies["Astronaut"].objectGroup.position.z);
                 tween.start();
+
             } else {
                 cameraControl.dispose();
                 roamingStatus = false;
                 initTween();
                 setTween(null, curBody, roamingCamera.camera.position.x, roamingCamera.camera.position.y, roamingCamera.camera.position.z);
                 tween.start();
+
             }
         };
         this.Collision = false;
         this.Light = 1.0;
         this.Ambient = 0.0;
         this.TimeScale = 1.0;
+
         this.Screenshot = function () {
             var dataURL = renderer.domElement.toDataURL();
             var newWindow = window.open()
@@ -335,15 +339,16 @@ function initGui() {
     gui.autoPlace = false;
 }
 
-
 function init() {
     container = document.getElementById('container');
     promptSound = document.getElementById('promptSound');
+
     initCamera();
     initScene();
     initLight();
     initObjects();
     initRender();
+
     renderCamera = trackCamera["Galaxy"];
     stats = new Stats();
     gui = new dat.GUI();
@@ -357,6 +362,7 @@ function init() {
     initGui()
     // thêm 
     initCelestialInfo();
+
 }
 
 function onWindowResize() {
@@ -405,7 +411,6 @@ function animate() {
     render();
     stats.update();
 }
-
 
 // thêm hàm mới 
 function showCelestialInfo(name) {
@@ -466,4 +471,3 @@ function initCelestialInfo() {
     });
 
 }
-
