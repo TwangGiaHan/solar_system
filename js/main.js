@@ -86,12 +86,12 @@ function pre() {
         "res/saturn/bump.png",
         "res/saturn/clouds.png",
         "res/saturn/ring.png",
-        "res/skybox/posX.jpg",
-        "res/skybox/posY.jpg",
-        "res/skybox/posZ.jpg",
-        "res/skybox/negX.jpg",
-        "res/skybox/negY.jpg",
-        "res/skybox/negZ.jpg",
+        "res/CubeMap/nx.png",
+        "res/CubeMap/ny.png",
+        "res/CubeMap/nz.png",
+        "res/CubeMap/px.png",
+        "res/CubeMap/py.png",
+        "res/CubeMap/pz.png",
         "res/sol/diffuse.png",
         "res/titan/diffuse.jpg",
         "res/uranus/diffuse.jpg",
@@ -200,9 +200,10 @@ function initRender() {
 function initObjects() {
     // Add sky box
     var skyboxTextureFilenames = [
-        "res/skybox/posX.jpg", "res/skybox/negX.jpg",
-        "res/skybox/posY.jpg", "res/skybox/negY.jpg",
-        "res/skybox/posZ.jpg", "res/skybox/negZ.jpg"];
+        "res/CubeMap/px.png", "res/CubeMap/nx.png",
+        "res/CubeMap/py.png", "res/CubeMap/ny.png",
+        "res/CubeMap/pz.png", "res/CubeMap/nz.png"
+    ];
     var materialArray = [];
     var skyGeometry = new THREE.CubeGeometry(10000000, 10000000, 10000000);
     for (var i = 0; i < 6; i++)
