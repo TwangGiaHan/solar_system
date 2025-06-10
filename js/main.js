@@ -246,15 +246,15 @@ function initGui() {
         calculate.add(calculateParams, i);
     var orbit = gui.addFolder('Orbit');
     orbitParams = {
-        Mercury: false,
-        Venus: false,
-        Earth: false,
-        Mars: false,
-        Jupiter: false,
-        Saturn: false,
-        Uranus: false,
-        Neptune: false,
-        Pluto: false
+        Mercury: true,
+        Venus: true,
+        Earth: true,
+        Mars: true,
+        Jupiter: true,
+        Saturn: true,
+        Uranus: true,
+        Neptune: true,
+        Pluto: true
     };
     for (var i in orbitParams)
         orbit.add(orbitParams, i);
@@ -292,7 +292,7 @@ function initGui() {
                 tween.start();
             }
         };
-        this.Collision = false;
+        // this.Collision = false;
         this.Light = 1.0;
         this.Ambient = 0.0;
         this.TimeScale = 1.0;
@@ -329,10 +329,10 @@ function initGui() {
         .onFinishChange(function () {
             window.addEventListener('mousedown', onWindowMouseDown, false);
         });
-    gui.add(control, "Collision");
     gui.add(control, "Roam");
-    gui.add(control, "Screenshot");
     gui.autoPlace = false;
+    // mới
+
 }
 
 
@@ -369,38 +369,11 @@ function onWindowResize() {
     renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
-function checkCrash() {
-    var cameraPos = roamingCamera.camera.position.clone();
-    for (var objKey in celestialBodies) {
-        if (celestialBodies[objKey].parent == celestialBodies["Sun"]) {
-            var r = celestialBodies[objKey].radius;
-            var dX = celestialBodies[objKey].getX() - roamingCamera.camera.position.x;
-            var dY = celestialBodies[objKey].getY() - roamingCamera.camera.position.y;
-            var dZ = celestialBodies[objKey].getZ() - roamingCamera.camera.position.z;
-            if (Math.sqrt(dX * dX + dY * dY + dZ * dZ) > 2 * r)
-                continue;
-            var localBodyPos = celestialBodies[objKey].objectGroup.position.clone();
-            var globalBodyPos = localBodyPos.applyMatrix4(celestialBodies[objKey].objectGroup.matrix);
-            var directVector = globalBodyPos.sub(cameraPos).normalize();
-            var ray = new THREE.Raycaster(cameraPos, directVector);
-            var collisionResults = ray.intersectObject(celestialBodies[objKey].objectGroup, true);
-            if (collisionResults.length > 0 && collisionResults[0].distance < celestialBodies[objKey].radius + directVector.length()) {
-                return true;
-            }
-
-        }
-    }
-    return false;
-}
-
 function animate() {
     requestAnimationFrame(animate);
     TWEEN.update();
     if (roamingStatus) {
         cameraControl.update(clock.getDelta());
-        if (control.Collision && checkCrash()) {
-            promptSound.play();
-        }
     }
     render();
     stats.update();
