@@ -199,7 +199,7 @@ celestialBodies = {
         glb: {
             path: "res/space/",
             file: "Tess.glb",
-            scale: 0.3,          // thu nhỏ mô hình phù hợp
+            scale: 0.1,          // thu nhỏ mô hình phù hợp
             angle: 45,             // xoay một chút cho trực quan
             x: 0.1, y: 0.02, z: 0  // đặt lệch vị trí để không trùng với vệ tinh khác
         },
