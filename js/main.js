@@ -131,9 +131,15 @@ function initCamera() {
         trackCamera[planets[i]] = new cameraParameters(3.0 * celestialBodies[planets[i]].radius, 3.0 * celestialBodies[planets[i]].radius, planets[i]);
     }
     // camera chuyển đến Hubble
-    trackCamera["Hubble"] = new cameraParameters(3.0 * celestialBodies["Hubble"].radius, 3.0 * celestialBodies["Hubble"].radius, "Hubble");
-    trackCamera["ISS"] = new cameraParameters(3.0 * celestialBodies["ISS"].radius, 3.0 * celestialBodies["ISS"].radius, "ISS");
-    trackCamera["TESS"] = new cameraParameters(3.0 * celestialBodies["TESS"].radius, 3.0 * celestialBodies["TESS"].radius, "TESS");
+    // trackCamera["Hubble"] = new cameraParameters(3.0 * celestialBodies["Hubble"].radius, 3.0 * celestialBodies["Hubble"].radius, "Hubble");
+    // trackCamera["ISS"] = new cameraParameters(3.0 * celestialBodies["ISS"].radius, 3.0 * celestialBodies["ISS"].radius, "ISS");
+    // trackCamera["TESS"] = new cameraParameters(3.0 * celestialBodies["TESS"].radius, 3.0 * celestialBodies["TESS"].radius, "TESS");
+
+    // camera chuyển đến các vệ tinh 
+    var satellites = ["Moon", "Phobos", "Deimos", "Europa", "Io", "Callisto", "Dione", "Titan", "ISS", "Hubble", "TESS"];
+    for (var i in satellites) {
+        trackCamera[satellites[i]] = new cameraParameters(3.0 * celestialBodies[satellites[i]].radius, 3.0 * celestialBodies[satellites[i]].radius, satellites[i]);
+    }
 }
 
 function initLight() {
@@ -258,7 +264,7 @@ function initGui() {
     };
     for (var i in orbitParams)
         orbit.add(orbitParams, i);
-    gui.add(params, 'Camera', ["Galaxy", "Sun", "Hubble", "ISS", "TESS", "Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"]).onChange(function (val) {
+    gui.add(params, 'Camera', ["Galaxy", "Sun", "Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"]).onChange(function (val) {
         nextBody = val;
         if (nextBody != switchCamera.body || (curBody == "Galaxy" && nextBody == "Sun")) {
             initTween();
@@ -269,6 +275,27 @@ function initGui() {
         // thêm 
         showCelestialInfo(nextBody);
     });
+
+    // Thêm Nhóm các vệ tinh tự nhiên và nhân tạo
+    var satellites = [
+        "Moon", "Phobos", "Deimos", "Europa",
+        "Io", "Callisto", "Dione",  "Titan",
+        "ISS", "Hubble", "TESS" // vệ tinh nhân tạo
+    ];  
+    var satelliteParams = { Satellite: satellites[0] };
+    gui.add(satelliteParams, 'Satellite', satellites).name("Satellites").onChange(function(val) {
+        nextBody = val;
+        params.Camera = val;
+        if (nextBody != switchCamera.body || (curBody == "Galaxy" && nextBody == "Sun")) {
+            initTween();
+            cameraCopy(switchCamera, trackCamera[curBody]);
+            setTween(curBody, nextBody);
+            tween.start();
+        }
+        curBody = nextBody;
+        showCelestialInfo(nextBody);
+    });
+
     control = new function () {
         this.Roam = function () {
             if (roamingStatus == false) {
@@ -292,7 +319,7 @@ function initGui() {
                 tween.start();
             }
         };
-        // this.Collision = false;
+         
         this.Light = 1.0;
         this.Ambient = 0.0;
         this.TimeScale = 1.0;
@@ -330,9 +357,9 @@ function initGui() {
             window.addEventListener('mousedown', onWindowMouseDown, false);
         });
     gui.add(control, "Roam");
+    gui.add(control, "Screenshot");
     gui.autoPlace = false;
     // mới
-
 }
 
 
