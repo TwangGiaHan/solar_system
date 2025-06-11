@@ -278,12 +278,17 @@ function initGui() {
 
     // Thêm Nhóm các vệ tinh tự nhiên và nhân tạo
     var satellites = [
-        "Moon", "Phobos", "Deimos", "Europa",
-        "Io", "Callisto", "Dione",  "Titan",
-        "ISS", "Hubble", "TESS" // vệ tinh nhân tạo
-    ];  
-    var satelliteParams = { Satellite: satellites[0] };
+        "None", 
+        "Moon", "Phobos", "Deimos", "Europa", "Io", "Callisto", "Dione",  "Titan",
+        "ISS", "Hubble", "TESS"
+    ];
+    var satelliteParams = { Satellite: "None" }; // Đặt mặc định là None
     gui.add(satelliteParams, 'Satellite', satellites).name("Satellites").onChange(function(val) {
+        if (val === "None") {
+            document.getElementById('celestial-info').style.display = 'none';
+            document.getElementById('toggle-button').style.display = 'none';
+            return;
+        }
         nextBody = val;
         params.Camera = val;
         if (nextBody != switchCamera.body || (curBody == "Galaxy" && nextBody == "Sun")) {
