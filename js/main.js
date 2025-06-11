@@ -407,21 +407,17 @@ function animate() {
 }
 
 
-// thêm hàm mới 
 function showCelestialInfo(name) {
     const panel = document.getElementById('celestial-info');
     const toggleBtn = document.getElementById('toggle-button');
-
 
     if (!panel || !toggleBtn) {
         console.error("Không tìm thấy panel hoặc nút toggle");
         return;
     }
-
     
     panel.style.display = 'block';
     toggleBtn.style.display = 'block';
-
 
     if (name === "Galaxy") {
         panel.style.display = 'none';
@@ -432,22 +428,53 @@ function showCelestialInfo(name) {
     const data = window.celestialData.find(obj => obj.name === name);
     if (!data) return;
     
- 
     panel.classList.remove('collapsed');
-
 
     document.getElementById('celestial-name').textContent = data.name;
     document.getElementById('celestial-type').textContent = data.type;
-    document.getElementById('celestial-radius').textContent = data.radius;
-    document.getElementById('celestial-orbit').textContent = data.orbitPeriod;
-    document.getElementById('celestial-rotation').textContent = data.rotationPeriod;
-    document.getElementById('celestial-parent').textContent = data.parent;
-    document.getElementById('celestial-atmosphere').textContent = data.atmosphere ? "Yes" : "No";
-    document.getElementById('celestial-rings').textContent = data.hasRing ? "Yes" : "No";
-    document.getElementById('celestial-description').textContent = data.description;
+
+    updateField('celestial-radius', data.radius, true);
+    updateField('celestial-mass', data.mass, false, true);
+    
+    const tempElement = document.getElementById('celestial-temperature');
+    if (Array.isArray(data.surfaceTemperature)) {
+        updateField('celestial-temperature', `${data.surfaceTemperature[0]} to ${data.surfaceTemperature[1]}`);
+    } else {
+        updateField('celestial-temperature', data.surfaceTemperature);
+    }
+    
+    updateField('celestial-distance-sun', data.distanceFromSun, true);
+    updateField('celestial-distance-parent', data.distanceFromPlanet, true);
+    
+    updateField('celestial-axial-tilt', data.axialTilt);
+    updateField('celestial-gravity', data.surfaceGravity);
+    updateField('celestial-orbit', data.orbitPeriod);
+    updateField('celestial-rotation', data.rotationPeriod);
+    updateField('celestial-parent', data.parent);
+    updateField('celestial-description', data.description);
 }
 
-// Thêm hàm mới
+// Hàm cập nhật các trường thông tin và ẩn nếu giá trị thiếu
+function updateField(id, value, isNumber = false, isExponential = false) {
+    const element = document.getElementById(id);
+    if (!element) return;
+
+    const parent = element.closest('p'); 
+    
+    if (value === undefined || value === null) {
+        parent.style.display = 'none'; 
+    } else {
+        parent.style.display = ''; 
+        if (isNumber) {
+            element.textContent = value.toLocaleString();
+        } else if (isExponential) {
+            element.textContent = value.toExponential(3);
+        } else {
+            element.textContent = value;
+        }
+    }
+}
+
 function initCelestialInfo() {
     const panel = document.getElementById('celestial-info');
     const toggleBtn = document.getElementById('toggle-button');
@@ -459,10 +486,8 @@ function initCelestialInfo() {
   
     panel.classList.add('collapsed');
 
-
     toggleBtn.addEventListener('click', function() {
         panel.classList.toggle('collapsed');
         this.textContent = panel.classList.contains('collapsed') ? '⊕' : '⊖';
     });
-
 }
